@@ -42,11 +42,7 @@ final class DocumentController extends AbstractController
 
         $this->documentService->save($document);
 
-        $this->mailer->send((new Email())
-            ->from('system@example.com')
-            ->to($document->getClient()->getEmail())
-            ->text($data['comment'])
-        );
+
 
         return $this->json($document, Response::HTTP_OK);
     }
