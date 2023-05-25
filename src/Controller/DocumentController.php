@@ -29,6 +29,7 @@ final class DocumentController extends AbstractController
         return $this->json($document, Response::HTTP_CREATED);
     }
 
+    #[Route('/documents/{documentId}/sign', methods: ['POST'])]
     public function sign(Request $request): Response
     {
         $documentId = $request->attributes->get('documentId');
