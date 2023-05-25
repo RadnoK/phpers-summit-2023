@@ -9,14 +9,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 
 final class DocumentController extends AbstractController
 {
     public function __construct(
         private readonly DocumentService $documentService,
-        private readonly MailerInterface $mailer,
     ) { }
 
     #[Route('/documents', methods: ['POST'])]
@@ -36,17 +33,7 @@ final class DocumentController extends AbstractController
 
         $data = \json_decode((string) $request->getContent(), true);
 
-        $document = $this->documentService->get($documentId);
-        $document->setSignedAt(new \DateTimeImmutable());
-        $document->setSignatureHash(random_bytes(32));
-
-        $this->documentService->save($document);
-
-        $this->mailer->send((new Email())
-            ->from('system@example.com')
-            ->to($document->getClient()->getEmail())
-            ->text($document->getSignatureComment())
-        );
+        $this->documentService->sign($documentId, $data);
 
         return $this->json($document, Response::HTTP_OK);
     }

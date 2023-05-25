@@ -5,14 +5,20 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Document;
+use App\Event\DocumentSignedEvent;
 use App\Factory\DocumentFactory;
 use App\Repository\DocumentRepository;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 final readonly class DocumentService
 {
     public function __construct(
         private DocumentFactory $documentFactory,
         private DocumentRepository $documentRepository,
+        private SignatureService $signatureService,
+        private EventDispatcherInterface $eventDispatcher,
     ) { }
 
     public function create(array $document): Document
@@ -24,13 +30,24 @@ final readonly class DocumentService
         return $entity;
     }
 
-    public function get(int $documentId): Document
-    {
-        return $this->documentRepository->find($documentId);
-    }
-
     public function save(Document $document): void
     {
         $this->documentRepository->save($document);
+    }
+
+    public function sign(int $documentId, string $data): void
+    {
+        /** @var Document $document */
+        $document = $this->documentRepository->find($documentId);
+        $document->setSignedAt(new \DateTimeImmutable());
+        $document->setSignatureHash($this->signatureService->generate());
+
+        $this->documentRepository->save($document);
+
+        $this->eventDispatcher->dispatch(new DocumentSignedEvent(
+            documentId: $documentId,
+            clientEmail: $document->getClient()->getEmail(),
+            comment: $data['comment'],
+        ));
     }
 }
