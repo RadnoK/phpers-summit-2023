@@ -10,13 +10,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Routing\Annotation\Route;
 
 final class DocumentController extends AbstractController
 {
     public function __construct(
-        private readonly DocumentService $documentService,
-        private readonly MailerInterface $mailer,
+        private readonly MessageBusInterface $messageBus,
     ) { }
 
     #[Route('/documents', methods: ['POST'])]
@@ -29,10 +30,10 @@ final class DocumentController extends AbstractController
         return $this->json($document, Response::HTTP_CREATED);
     }
 
-    #[Route('/documents/{documentId}/sign', methods: ['POST'])]
+    #[Route('/documents/{id}/sign', methods: ['POST'])]
     public function sign(Request $request): Response
     {
-        $documentId = $request->attributes->get('documentId');
+        $documentId = $request->attributes->get('id');
 
         $data = \json_decode((string) $request->getContent(), true);
 
