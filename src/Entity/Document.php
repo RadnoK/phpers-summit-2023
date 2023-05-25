@@ -32,6 +32,9 @@ class Document
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $sentAt = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $signatureHash = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -105,6 +108,18 @@ class Document
     public function setSentAt(?\DateTimeImmutable $sentAt): self
     {
         $this->sentAt = $sentAt;
+
+        return $this;
+    }
+
+    public function getSignatureHash(): ?string
+    {
+        return $this->signatureHash;
+    }
+
+    public function setSignatureHash(?string $signatureHash): self
+    {
+        $this->signatureHash = $signatureHash;
 
         return $this;
     }
