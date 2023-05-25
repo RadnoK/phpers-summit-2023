@@ -23,4 +23,14 @@ final readonly class DocumentService
 
         return $entity;
     }
+
+    public function get(int $documentId): Document
+    {
+        return $this->documentRepository->find($documentId);
+    }
+
+    public function save(Document $document): void
+    {
+        $this->documentRepository->save($document);
+    }
 }
