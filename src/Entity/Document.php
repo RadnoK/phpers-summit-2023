@@ -35,6 +35,10 @@ class Document
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $signatureHash = null;
 
+    #[ORM\ManyToOne(inversedBy: 'documents')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Client $client = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -120,6 +124,18 @@ class Document
     public function setSignatureHash(?string $signatureHash): self
     {
         $this->signatureHash = $signatureHash;
+
+        return $this;
+    }
+
+    public function getClient(): ?Client
+    {
+        return $this->client;
+    }
+
+    public function setClient(?Client $client): self
+    {
+        $this->client = $client;
 
         return $this;
     }
