@@ -35,6 +35,6 @@ final class DocumentController extends AbstractController
 
         $this->documentService->sign($documentId, $data);
 
-        return $this->json($document, Response::HTTP_OK);
+        return $this->json(['status' => 'OK'], Response::HTTP_OK);
     }
 }

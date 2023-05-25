@@ -9,8 +9,6 @@ use App\Event\DocumentSignedEvent;
 use App\Factory\DocumentFactory;
 use App\Repository\DocumentRepository;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 
 final readonly class DocumentService
 {
@@ -47,7 +45,7 @@ final readonly class DocumentService
         $this->eventDispatcher->dispatch(new DocumentSignedEvent(
             documentId: $documentId,
             clientEmail: $document->getClient()->getEmail(),
-            comment: $data['comment'],
+            comment: $document->getSignatureComment(),
         ));
     }
 }
