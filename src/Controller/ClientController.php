@@ -8,6 +8,7 @@ use App\Service\ClientService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 final class ClientController extends AbstractController
 {
@@ -15,6 +16,7 @@ final class ClientController extends AbstractController
         private readonly ClientService $clientService,
     ) { }
 
+    #[Route('/clients', methods: ['POST'])]
     public function create(Request $request): Response
     {
         $data = \json_decode((string) $request->getContent(), true);
