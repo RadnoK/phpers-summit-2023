@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Service\DocumentService;
+use App\CQRS\Command\CreateDocumentCommand;
+use App\CQRS\Command\SignDocumentCommand;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,7 +24,11 @@ final class DocumentController extends AbstractController
     {
         $data = \json_decode((string) $request->getContent(), true);
 
-        $document = $this->documentService->create($data);
+        $document = $this->messageBus->dispatch(new CreateDocumentCommand(
+            $data['name'],
+            $data['content'],
+            $data['clientId'],
+        ));
 
         return $this->json($document, Response::HTTP_CREATED);
     }
@@ -37,17 +40,10 @@ final class DocumentController extends AbstractController
 
         $data = \json_decode((string) $request->getContent(), true);
 
-        $document = $this->documentService->get($documentId);
-        $document->setSignedAt(new \DateTimeImmutable());
-        $document->setSignatureHash(random_bytes(32));
+        $document = $this->messageBus->dispatch(new SignDocumentCommand(
+            documentId: $documentId,
 
-        $this->documentService->save($document);
-
-        $this->mailer->send((new Email())
-            ->from('system@example.com')
-            ->to($document->getClient()->getEmail())
-            ->text($document->getSignatureComment())
-        );
+        ));
 
         return $this->json($document, Response::HTTP_OK);
     }
