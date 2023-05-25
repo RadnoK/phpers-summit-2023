@@ -45,7 +45,7 @@ final class DocumentController extends AbstractController
         $this->mailer->send((new Email())
             ->from('system@example.com')
             ->to($document->getClient()->getEmail())
-            ->text($data['comment'])
+            ->text($document->getSignatureComment())
         );
 
         return $this->json($document, Response::HTTP_OK);
