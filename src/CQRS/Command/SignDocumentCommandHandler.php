@@ -27,7 +27,11 @@ final readonly class SignDocumentCommandHandler
 
         $this->documentRepository->save($document);
 
-        $this->eventBus->dispatch(new DocumentSignedEvent());
+        $this->eventBus->dispatch(new DocumentSignedEvent(
+            documentId: $document->getId(),
+            clientEmail: $document->getClient()->getEmail(),
+            comment: $document->getSignatureComment(),
+        ));
     }
 
     private function generateHash(): string

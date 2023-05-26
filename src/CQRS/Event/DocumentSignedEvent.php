@@ -6,5 +6,9 @@ namespace App\CQRS\Event;
 
 final class DocumentSignedEvent
 {
-
+    public function __construct(
+        public int $documentId,
+        public string $clientEmail,
+        public string $comment,
+    ) { }
 }
