@@ -39,6 +39,9 @@ class Document
     #[ORM\JoinColumn(nullable: false)]
     private ?Client $client = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $signatureComment = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -136,6 +139,18 @@ class Document
     public function setClient(?Client $client): self
     {
         $this->client = $client;
+
+        return $this;
+    }
+
+    public function getSignatureComment(): ?string
+    {
+        return $this->signatureComment;
+    }
+
+    public function setSignatureComment(?string $signatureComment): self
+    {
+        $this->signatureComment = $signatureComment;
 
         return $this;
     }

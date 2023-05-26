@@ -8,7 +8,7 @@ use App\Entity\Document;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
-final class SendEmailAfterSuccessfulSignatureAction
+final class SendEmailAfterSuccessfulSignAction implements ActionInterface
 {
     public function __construct(
         private readonly MailerInterface $mailer,
@@ -19,7 +19,12 @@ final class SendEmailAfterSuccessfulSignatureAction
         $this->mailer->send((new Email())
             ->from('system@example.com')
             ->to($document->getClient()->getEmail())
-            ->text($document->getComment())
+            ->text($document->getSignatureComment())
         );
+    }
+
+    public function isEligible(Document $document): bool
+    {
+        return $document->getSignedAt() !== null;
     }
 }
