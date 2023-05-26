@@ -38,7 +38,7 @@ final readonly class DocumentService
         /** @var Document $document */
         $document = $this->documentRepository->find($documentId);
         $document->setSignedAt(new \DateTimeImmutable());
-        $document->setSignatureHash($this->signatureService->generate());
+        $document->setSignatureHash($this->generateHash());
         $document->setSignatureComment($data['comment']);
 
         $this->documentRepository->save($document);
@@ -48,5 +48,10 @@ final readonly class DocumentService
             clientEmail: $document->getClient()->getEmail(),
             comment: $document->getSignatureComment(),
         ));
+    }
+
+    public function generateHash(): string
+    {
+        return random_bytes(32);
     }
 }
