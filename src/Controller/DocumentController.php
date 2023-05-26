@@ -16,16 +16,6 @@ final class DocumentController extends AbstractController
         private readonly DocumentService $documentService,
     ) { }
 
-    #[Route('/documents', methods: ['POST'])]
-    public function create(Request $request): Response
-    {
-        $data = \json_decode((string) $request->getContent(), true);
-
-        $document = $this->documentService->create($data);
-
-        return $this->json($document, Response::HTTP_CREATED);
-    }
-
     #[Route('/documents/{documentId}/sign', methods: ['POST'])]
     public function sign(Request $request): Response
     {
@@ -36,5 +26,15 @@ final class DocumentController extends AbstractController
         $this->documentService->sign($documentId, $data);
 
         return $this->json(['status' => 'OK'], Response::HTTP_OK);
+    }
+
+    #[Route('/documents', methods: ['POST'])]
+    public function create(Request $request): Response
+    {
+        $data = \json_decode((string) $request->getContent(), true);
+
+        $document = $this->documentService->create($data);
+
+        return $this->json($document, Response::HTTP_CREATED);
     }
 }

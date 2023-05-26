@@ -33,12 +33,13 @@ final readonly class DocumentService
         $this->documentRepository->save($document);
     }
 
-    public function sign(int $documentId, string $data): void
+    public function sign(int $documentId, array $data): void
     {
         /** @var Document $document */
         $document = $this->documentRepository->find($documentId);
         $document->setSignedAt(new \DateTimeImmutable());
         $document->setSignatureHash($this->signatureService->generate());
+        $document->setSignatureComment($data['comment']);
 
         $this->documentRepository->save($document);
 
