@@ -6,20 +6,25 @@ namespace App\Documents\Signing\Actions;
 
 use App\Documents\Signing\Payload\SignaturePayload;
 use App\Entity\Document;
+use App\Mailer\ClientEmail\Content;
+use App\Mailer\ClientEmail\MailerService;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
 final class SendEmailAfterSuccessfulSignAction implements ActionInterface
 {
     public function __construct(
-        private readonly MailerInterface $mailer,
+        private readonly MailerService $mailerService,
     ) { }
 
     public function __invoke(Document $document): void {
-        $this->mailer->send((new Email())
-            ->from('system@example.com')
-            ->to($document->getClient()->getEmail())
-            ->text($document->getSignatureComment())
+        $this->mailerService->send(
+            new Content(
+                subject: 'Document signed',
+                hero: 'Your document has been signed',
+                content: 'Your document has been signed by all parties.',
+                callToAction: 'Download the document',
+            )
         );
     }
 
