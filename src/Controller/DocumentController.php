@@ -36,14 +36,8 @@ final class DocumentController extends AbstractController
 
         $data = \json_decode((string) $request->getContent(), true);
 
-        $document = $this->documentService->get($documentId);
-        $document->setSignedAt(new \DateTimeImmutable());
-        $document->setSignatureHash(random_bytes(32));
+        $this->documentService->sign($documentId, $data);
 
-        $this->documentService->save($document);
-
-
-
-        return $this->json($document, Response::HTTP_OK);
+        return $this->json(['status' => 'OK'], Response::HTTP_OK);
     }
 }
