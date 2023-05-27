@@ -14,13 +14,11 @@ final class SignedDateModifier implements ModifierInterface
         private readonly ClockInterface $clock,
     ) { }
 
-    public function __invoke(Document $document, SignaturePayload $signature): void
-    {
+    public function __invoke(Document $document, SignaturePayload $signature): void {
         $document->setSignedAt($this->clock->now());
     }
 
-    public function isEligible(Document $document, SignaturePayload $signature): bool
-    {
+    public function isEligible(Document $document, SignaturePayload $signature): bool {
         return true;
     }
 }

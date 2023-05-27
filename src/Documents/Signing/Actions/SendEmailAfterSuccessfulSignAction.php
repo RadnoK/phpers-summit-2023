@@ -8,17 +8,15 @@ use App\Documents\Signing\Payload\SignaturePayload;
 use App\Entity\Document;
 use App\Mailer\ClientEmail\Content;
 use App\Mailer\ClientEmail\MailerService;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 
-final class SendEmailAfterSuccessfulSignAction implements ActionInterface
-{
+final class SendEmailAfterSuccessfulSignAction implements ActionInterface {
     public function __construct(
         private readonly MailerService $mailerService,
     ) { }
 
     public function __invoke(Document $document): void {
         $this->mailerService->send(
+            $document->getClient()->getEmail(),
             new Content(
                 subject: 'Document signed',
                 hero: 'Your document has been signed',

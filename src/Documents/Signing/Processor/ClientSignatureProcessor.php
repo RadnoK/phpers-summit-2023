@@ -16,8 +16,7 @@ final class ClientSignatureProcessor
         private readonly ModifierRegistry $modifierRegistry,
     ) { }
 
-    public function process(Document $document, SignaturePayload $signature): void
-    {
+    public function process(Document $document, SignaturePayload $signature): void {
         foreach ($this->modifierRegistry->all() as $modifier) {
             if ($modifier->isEligible($document)) {
                 $modifier($document, $signature);

@@ -10,8 +10,8 @@ final class MailerService
         private readonly MailerClient $mailerClient,
     ) { }
 
-    public function send(Content $content): void
+    public function send(string $to, Content $content): void
     {
-        $this->mailerClient->send($content);
+        $this->mailerClient->send($to, $content);
     }
 }
